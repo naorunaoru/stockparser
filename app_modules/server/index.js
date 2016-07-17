@@ -129,10 +129,14 @@ function createServerForDocument (doc, port) {
   app.get('/:id', function(req, res) {
     getInfo(doc, function(info) {
       info.worksheets[0].getCells(function(error, cells) {
-        var spreadsheetData = parseRowsIntoData(parseCellsIntoRows(cells));
+        var data = parseRowsIntoData(parseCellsIntoRows(cells)).aromkasWithReviews[req.params.id];
+        if (!data) {
+          return;
+        }
+
         res.render('aroma', {
-          title: 'Шток-Ревю',
-          data: spreadsheetData.aromkasWithReviews[req.params.id]
+          title: 'Шток-Ревю | ' + data.name,
+          data: data
         });
       });
     });
