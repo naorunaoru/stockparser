@@ -8,4 +8,5 @@ var server = require('./app_modules/server');
 
 var doc = new GoogleSpreadsheet('1orBhRALYqEZW5S7QP3ZPqohY0gd6dDZRbHD_YMQh5xI');
 
-server(doc, 8080);
+var args = require('optimist').argv;
+server(doc, args.port || 8080);
