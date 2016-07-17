@@ -1,0 +1,38 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  padding: 20px;
+}
+
+.content-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+a {
+  color: #4d94ca;
+}
+
+.review {
+  margin: 20px 0;
+  border: 1px solid #d6d7d8;
+  padding: 20px;
+}
+
+.review-head {
+  margin-bottom: 10px;
+}
+
+.review-name {
+  font-weight: bold;
+}
+
+.review-percentage {
+  margin-left: 5px;
+  opacity: 0.7;
+}

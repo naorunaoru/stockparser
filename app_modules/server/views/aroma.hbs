@@ -1,0 +1,17 @@
+<h2>{{data.name}}</h2>
+<a href="/" style="margin-top: -20px; display:block;">← К списку</a>
+
+<div class="reviews">
+  {{#each data.reviews}}
+    <div class="review">
+      <div class="review-head">
+        <span class="review-name">{{this.name}}</span>
+        <span class="review-percentage">{{this.percentage}}</span>
+      </div>
+
+      <div class="review-text">
+        {{this.review}}
+      </div>
+    </div>
+  {{/each}}
+</div>

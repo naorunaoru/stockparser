@@ -1,0 +1,32 @@
+<h2>Штоки</h2>
+
+<p>
+  Оставляем отзывы <a href="https://docs.google.com/spreadsheets/d/1orBhRALYqEZW5S7QP3ZPqohY0gd6dDZRbHD_YMQh5xI/edit?usp=sharing">тут.</a>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>
+        Аромка
+      </th>
+      <th>
+        Количество отзывов
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each aromkas}}
+      <tr>
+        <td>
+          <a href="/{{this.id}}">
+            {{this.name}}
+          </a>
+        </td>
+        <td>
+          {{this.reviewsCount}}
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
