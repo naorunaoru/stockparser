@@ -52,7 +52,7 @@ function parseCells (cells) {
       aromkaKeys.forEach(function(colId) {
         colId = parseInt(colId);
 
-        if (users[colId + 1]) {
+        if (users[colId - 1]) {
           aromkasWithReviews[aromkaRowId].reviews.push({
             name: users[colId - 1],
             percentage: rows[aromkaRowId][colId - 1] ? rows[aromkaRowId][colId - 1].replace(/%?$/, '%') : '',

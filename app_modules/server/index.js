@@ -47,6 +47,14 @@ function createServerForDocument (doc, port) {
     });
   });
 
+  app.get('/debug', function(req, res) {
+    getInfo(doc, function(info) {
+      info.worksheets[0].getCells(function(error, cells) {
+        res.json(cells);
+      });
+    });
+  });
+
   app.get('/:id', function(req, res) {
     getInfo(doc, function(info) {
       info.worksheets[0].getCells(function(error, cells) {
@@ -61,7 +69,7 @@ function createServerForDocument (doc, port) {
         });
       });
     });
-  })
+  });
 
   app.listen(port, function () {
     console.log('server started on', port);
