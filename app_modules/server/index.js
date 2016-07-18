@@ -1,88 +1,7 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
 var auth = require('../auth');
-
-function parseCellsIntoRows (cells) {
-  var result = {};
-
-  cells.forEach(function(cell) {
-    if (!cell.value) {
-      return;
-    }
-
-    var coords = cell.batchId.match(/R(\d+)C(\d+)/);
-
-    if (!result[coords[1]]) {
-      result[coords[1]] = {};
-    }
-
-    result[coords[1]][coords[2]] = cell.value;
-  });
-
-  return result;
-}
-
-function parseRowsIntoData (rows) {
-    var users = {};
-    var aromkas = {};
-    var aromkasWithReviews = {};
-
-  // parse users
-  Object.keys(rows[5]).forEach(function(colId) {
-    if (colId > 2) {
-      users[colId] = rows[5][colId];
-    }
-  });
-
-  // parse aromkas
-  Object.keys(rows).forEach(function(rowId) {
-    if (rowId >= 7) {
-      aromkas[rowId] = rows[rowId][1];
-    }
-  });
-
-  // parse reviews
-  Object.keys(aromkas).forEach(function(aromkaRowId) {
-    var aromkaKeys = Object.keys(rows[aromkaRowId]);
-
-    if (aromkaKeys.length > 1) {
-      aromkasWithReviews[aromkaRowId] = {
-        name: aromkas[aromkaRowId],
-        reviews: []
-      };
-
-      aromkaKeys.forEach(function(colId) {
-        colId = parseInt(colId);
-        if (users[parseInt(colId) + 1]) {
-          var thingToPush = {};
-
-          thingToPush = {
-            name: users[colId - 1],
-            percentage: rows[aromkaRowId][colId - 1] ? rows[aromkaRowId][colId - 1].replace(/%?$/, '%') : '',
-            review: rows[aromkaRowId][colId]
-          }
-
-          aromkasWithReviews[aromkaRowId].reviews.push(thingToPush);
-        }
-      });
-    } else {
-      delete aromkas[aromkaRowId];
-    }
-  });
-
-  var aromkasArray = Object.keys(aromkas).map(function(key) {
-    return {
-      id: key,
-      name: aromkas[key],
-      reviewsCount: aromkasWithReviews[key].reviews.length
-    }
-  });
-
-  return {
-    aromkas: aromkasArray,
-    aromkasWithReviews: aromkasWithReviews
-  };
-}
+var parseCells = require('./parse');
 
 function getInfo (doc, callback) {
   doc.getInfo(function(error, info) {
@@ -117,10 +36,12 @@ function createServerForDocument (doc, port) {
   app.get('/', function (req, res) {
     getInfo(doc, function(info) {
       info.worksheets[0].getCells(function(error, cells) {
-        var spreadsheetData = parseRowsIntoData(parseCellsIntoRows(cells));
+        var spreadsheetData = parseCells(cells);
         res.render('index', {
           title: 'Шток-Ревю',
-          aromkas: spreadsheetData.aromkas
+          aromkas: spreadsheetData.aromkas.filter(function(aromka) {
+            return aromka.reviewsCount > 0;
+          })
         });
       });
     });
@@ -129,7 +50,7 @@ function createServerForDocument (doc, port) {
   app.get('/:id', function(req, res) {
     getInfo(doc, function(info) {
       info.worksheets[0].getCells(function(error, cells) {
-        var data = parseRowsIntoData(parseCellsIntoRows(cells)).aromkasWithReviews[req.params.id];
+        var data = parseCells(cells).aromkasWithReviews[req.params.id];
         if (!data) {
           return;
         }
