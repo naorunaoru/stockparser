@@ -16,6 +16,12 @@ function getInfo (doc, callback) {
   });
 }
 
+function getWorksheetFromInfo (info) {
+  info.worksheets.find(function(ws) {
+    return ws.id == 'od6';
+  });
+}
+
 function createServerForDocument (doc, port) {
   var app = express();
   app.engine('.hbs', exphbs({
@@ -35,7 +41,7 @@ function createServerForDocument (doc, port) {
 
   app.get('/', function (req, res) {
     getInfo(doc, function(info) {
-      info.worksheets[0].getCells(function(error, cells) {
+      info.worksheets[2].getCells(function(error, cells) {
         var spreadsheetData = parseCells(cells);
         res.render('index', {
           title: 'Шток-Ревю',
@@ -49,7 +55,7 @@ function createServerForDocument (doc, port) {
 
   app.get('/debug', function(req, res) {
     getInfo(doc, function(info) {
-      info.worksheets[0].getCells(function(error, cells) {
+      info.worksheets[2].getCells(function(error, cells) {
         res.json(cells);
       });
     });
@@ -57,7 +63,7 @@ function createServerForDocument (doc, port) {
 
   app.get('/:id', function(req, res) {
     getInfo(doc, function(info) {
-      info.worksheets[0].getCells(function(error, cells) {
+      info.worksheets[2].getCells(function(error, cells) {
         var data = parseCells(cells).aromkasWithReviews[req.params.id];
         if (!data) {
           return;

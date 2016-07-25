@@ -19,6 +19,10 @@ function parseCellsIntoRows (cells) {
 }
 
 function parseCells (cells) {
+  if (!cells) {
+    console.log('cells?', cells);
+    return;
+  }
   var rows = parseCellsIntoRows(cells);
 
   var users = {};
